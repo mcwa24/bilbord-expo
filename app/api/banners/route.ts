@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { imageUrl, link, title } = body;
+    const { imageUrl, link, title, position } = body;
 
     if (!imageUrl || !link) {
       return NextResponse.json(
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       link,
       title: title || '',
       createdAt: new Date().toISOString(),
+      position: position ?? null,
     };
 
     const newBanner = await addBanner(bannerToAdd);

@@ -1,18 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { isAdmin } from "@/lib/admin";
 
 export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   const isAdminPage = pathname?.startsWith('/dashboard');
   const isLoginPage = pathname === '/prijava';
+
+  useEffect(() => {
+    setIsAdminLoggedIn(isAdmin());
+  }, [pathname]);
 
   if (isLoginPage) {
     return null;
@@ -36,6 +42,17 @@ export default function Header() {
               />
             </Link>
           </div>
+
+          <nav className="hidden xl:flex items-center gap-6 text-sm md:text-base relative">
+            {isAdminLoggedIn && (
+              <Link
+                href="/dashboard"
+                className={`${pathname === "/dashboard" ? "underline font-semibold" : ""} text-[#1d1d1f] hover:underline transition`}
+              >
+                Admin
+              </Link>
+            )}
+          </nav>
 
 
           <div className="xl:hidden z-50">
@@ -82,6 +99,15 @@ export default function Header() {
                     >
                       Početna
                     </Link>
+                    {isAdminLoggedIn && (
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`${pathname === "/dashboard" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                      >
+                        Admin
+                      </Link>
+                    )}
                   </div>
                 </div>
               </motion.div>

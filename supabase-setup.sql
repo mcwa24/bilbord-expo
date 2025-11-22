@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS banners (
   image_url TEXT NOT NULL,
   link TEXT NOT NULL,
   title TEXT DEFAULT '',
+  position INTEGER,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

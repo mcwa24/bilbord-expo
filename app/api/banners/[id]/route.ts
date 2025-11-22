@@ -9,7 +9,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { imageUrl, link, title } = body;
+    const { imageUrl, link, title, position } = body;
 
     if (!imageUrl || !link) {
       return NextResponse.json(
@@ -24,6 +24,7 @@ export async function PUT(
       link,
       title: title || '',
       createdAt: new Date().toISOString(),
+      position: position ?? null,
     };
 
     await updateBanner(id, banner);

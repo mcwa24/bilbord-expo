@@ -4,6 +4,7 @@ export interface Banner {
   link: string;
   title?: string;
   createdAt: string;
+  position?: number;
 }
 
 

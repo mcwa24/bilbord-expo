@@ -7,6 +7,7 @@ export async function getBanners(): Promise<Banner[]> {
     const { data, error } = await supabase
       .from('banners')
       .select('*')
+      .order('position', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -22,6 +23,7 @@ export async function getBanners(): Promise<Banner[]> {
       link: banner.link,
       title: banner.title || '',
       createdAt: banner.created_at,
+      position: banner.position ?? null,
     }));
     
     console.log('Mapped banners:', mapped.length);
@@ -63,6 +65,7 @@ export async function addBanner(banner: Banner): Promise<Banner> {
       image_url: banner.imageUrl,
       link: banner.link,
       title: banner.title || '',
+      position: banner.position ?? null,
     }).select().single();
 
     if (error) {
@@ -76,6 +79,7 @@ export async function addBanner(banner: Banner): Promise<Banner> {
       link: data.link,
       title: data.title || '',
       createdAt: data.created_at,
+      position: data.position ?? null,
     };
   } catch (error) {
     console.error('Error adding banner:', error);
@@ -92,6 +96,7 @@ export async function updateBanner(id: string, banner: Banner): Promise<void> {
         image_url: banner.imageUrl,
         link: banner.link,
         title: banner.title || '',
+        position: banner.position ?? null,
       })
       .eq('id', bannerId);
 
