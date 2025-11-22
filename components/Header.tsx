@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -54,7 +54,6 @@ export default function Header() {
             )}
           </nav>
 
-
           <div className="xl:hidden z-50">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
               {isMenuOpen ? <X size={24} className="text-[#1d1d1f]" /> : <Menu size={24} className="text-[#1d1d1f]" />}
@@ -78,10 +77,10 @@ export default function Header() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-                className="xl:hidden fixed top-4 right-4 w-80 bg-white shadow-2xl z-50 rounded-2xl"
+                className="xl:hidden fixed inset-0 bg-white z-50"
               >
-                <div className="p-6 pb-6">
-                  <div className="flex justify-end mb-6">
+                <div className="w-full h-full flex flex-col">
+                  <div className="flex justify-end p-6">
                     <button 
                       onClick={() => setIsMenuOpen(false)}
                       className="p-2 hover:bg-gray-100 rounded-full transition"
@@ -91,19 +90,39 @@ export default function Header() {
                     </button>
                   </div>
 
-                  <div className="space-y-0.5">
+                  <div className="flex-1 flex flex-col items-center justify-center space-y-6">
                     <Link
-                      href="/"
+                      href="https://bilbord.rs/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                      className="text-[#1d1d1f] text-xl font-medium hover:underline transition"
                     >
-                      Početna
+                      Bilbord Portal
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/pretplate/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-[#1d1d1f] text-xl font-medium hover:underline transition"
+                    >
+                      Cene
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/kontakt/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-[#1d1d1f] text-xl font-medium hover:underline transition"
+                    >
+                      Kontakt
                     </Link>
                     {isAdminLoggedIn && (
                       <Link
                         href="/dashboard"
                         onClick={() => setIsMenuOpen(false)}
-                        className={`${pathname === "/dashboard" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                        className="text-[#1d1d1f] text-xl font-medium hover:underline transition"
                       >
                         Admin
                       </Link>
