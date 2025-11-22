@@ -1,5 +1,6 @@
 import { getBanners } from '@/lib/storage';
 import Link from 'next/link';
+import BannerItem from '@/components/BannerItem';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -23,28 +24,7 @@ export default async function Home() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {banners.map((banner) => (
-              <Link
-                key={banner.id}
-                href={banner.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <div 
-                  className="relative w-full aspect-[4/5] overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-100"
-                  onContextMenu={(e) => e.preventDefault()}
-                  onDragStart={(e) => e.preventDefault()}
-                >
-                  <img
-                    src={banner.imageUrl}
-                    alt={banner.title || 'Banner'}
-                    className="w-full h-full object-cover select-none pointer-events-none"
-                    draggable="false"
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
-                </div>
-              </Link>
+              <BannerItem key={banner.id} banner={banner} />
             ))}
           </div>
         )}
