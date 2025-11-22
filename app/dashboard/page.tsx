@@ -3,10 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Banner } from '@/types/banner';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { isAdmin, logoutAdmin } from '@/lib/admin';
 
 export default function AdminPage() {
+  const router = useRouter();
   const [banners, setBanners] = useState<(Banner | null)[]>(Array(9).fill(null));
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     imageUrl: '',
@@ -16,15 +20,19 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
+    if (!isAdmin()) {
+      router.replace('/prijava');
+      return;
+    }
+    setIsAuthenticated(true);
     fetchBanners();
-  }, []);
+  }, [router]);
 
   const fetchBanners = async () => {
     try {
       const response = await fetch('/api/banners');
       if (response.ok) {
         const data = await response.json();
-        // Fill array with banners, keeping null for empty slots
         const bannersArray: (Banner | null)[] = Array(9).fill(null);
         data.forEach((banner: Banner, index: number) => {
           if (index < 9) {
@@ -82,7 +90,6 @@ export default function AdminPage() {
 
       let response;
       if (banners[index]) {
-        // Update existing banner
         response = await fetch(`/api/banners/${banners[index]?.id}`, {
           method: 'PUT',
           headers: {
@@ -91,7 +98,6 @@ export default function AdminPage() {
           body: JSON.stringify(bannerData),
         });
       } else {
-        // Create new banner
         response = await fetch('/api/banners', {
           method: 'POST',
           headers: {
@@ -153,17 +159,32 @@ export default function AdminPage() {
     setEditingIndex(index);
   };
 
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <main className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-[#1d1d1f]">Admin Panel</h1>
-          <Link
-            href="/"
-            className="px-4 py-2 text-[#1d1d1f] hover:underline transition-colors duration-200"
-          >
-            Nazad na sajt
-          </Link>
+          <div className="flex gap-4 items-center">
+            <Link
+              href="/"
+              className="px-4 py-2 text-[#1d1d1f] hover:underline transition-colors duration-200"
+            >
+              Nazad na sajt
+            </Link>
+            <button
+              onClick={() => {
+                logoutAdmin();
+                router.push('/prijava');
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+            >
+              Odjava
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">

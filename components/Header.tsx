@@ -11,7 +11,12 @@ export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isAdminPage = pathname?.startsWith('/admin');
+  const isAdminPage = pathname?.startsWith('/dashboard');
+  const isLoginPage = pathname === '/prijava';
+
+  if (isLoginPage) {
+    return null;
+  }
 
   return (
     <header className={`w-full ${isAdminPage ? 'bg-white border-b border-gray-200' : 'bg-transparent absolute top-0 left-0 right-0'} z-50`}>
@@ -32,20 +37,6 @@ export default function Header() {
             </Link>
           </div>
 
-          <nav className="hidden xl:flex items-center gap-6 text-sm md:text-base relative">
-            <Link
-              href="/"
-              className={`${pathname === "/" ? "underline font-semibold" : ""} text-[#1d1d1f] hover:underline transition`}
-            >
-              Početna
-            </Link>
-            <Link
-              href="/admin"
-              className="ml-2 px-8 py-4 rounded-full text-base font-medium text-[#1d1d1f] bg-[#f9c344] hover:bg-[#f0b830] transition"
-            >
-              Admin
-            </Link>
-          </nav>
 
           <div className="xl:hidden z-50">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
@@ -90,13 +81,6 @@ export default function Header() {
                       className={`${pathname === "/" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
                     >
                       Početna
-                    </Link>
-                    <Link
-                      href="/admin"
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/admin" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
-                    >
-                      Admin
                     </Link>
                   </div>
                 </div>

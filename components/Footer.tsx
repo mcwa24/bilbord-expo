@@ -8,10 +8,10 @@ import { Instagram } from 'lucide-react'
 
 export default function Footer() {
     const pathname = usePathname()
-    const isAdminPage = pathname?.startsWith('/admin')
+    const isAdminPage = pathname?.startsWith('/dashboard')
+    const isLoginPage = pathname === '/prijava'
 
-    // Sakrij footer na admin stranici
-    if (isAdminPage) {
+    if (isAdminPage || isLoginPage) {
         return null
     }
 
@@ -80,22 +80,31 @@ export default function Footer() {
                         </div>
                     </div>
 
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-                    <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-                        <Link href="https://bilbord.rs/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
-                            Bilbord Portal
+                <div className="flex flex-col md:flex-row items-start justify-between gap-8">
+                    <div className="flex flex-col gap-4 text-sm">
+                        <h3 className="font-semibold text-[#1d1d1f] mb-2">Pravne informacije</h3>
+                        <Link href="/pravila-privatnosti" className="text-gray-600 hover:text-gray-800">
+                            Privacy Policy
                         </Link>
                         <Link href="/cookie-policy" className="text-gray-600 hover:text-gray-800">
                             Cookie Policy
                         </Link>
-                        <Link href="/pravila-privatnosti" className="text-gray-600 hover:text-gray-800">
-                            Privacy Policy
-                        </Link>
+                    </div>
+
+                    <div className="flex flex-col gap-4 text-sm">
+                        <h3 className="font-semibold text-[#1d1d1f] mb-2">Informacije</h3>
                         <Link href="/uslovi" className="text-gray-600 hover:text-gray-800">
                             Uslovi Poslovanja
                         </Link>
                         <Link href="https://bilbord.rs/pretplate/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
                             Cene
+                        </Link>
+                    </div>
+
+                    <div className="flex flex-col gap-4 text-sm">
+                        <h3 className="font-semibold text-[#1d1d1f] mb-2">Kontakt</h3>
+                        <Link href="/prijava" className="text-gray-600 hover:text-gray-800">
+                            Klijent Login
                         </Link>
                         <Link href="https://bilbord.rs/kontakt/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
                             Kontakt
@@ -105,7 +114,7 @@ export default function Footer() {
                     <button
                         aria-label="Nazad na vrh"
                         onClick={handleScrollTop}
-                        className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition shadow-sm flex items-center justify-center"
+                        className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition shadow-sm flex items-center justify-center self-start md:self-center"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width={32} height={32} fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-600">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
