@@ -14,13 +14,18 @@ export async function getBanners(): Promise<Banner[]> {
       return [];
     }
 
-    return (data || []).map((banner: any) => ({
+    console.log('Fetched banners:', data?.length || 0);
+    
+    const mapped = (data || []).map((banner: any) => ({
       id: banner.id.toString(),
       imageUrl: banner.image_url,
       link: banner.link,
       title: banner.title || '',
       createdAt: banner.created_at,
     }));
+    
+    console.log('Mapped banners:', mapped.length);
+    return mapped;
   } catch (error) {
     console.error('Error fetching banners:', error);
     return [];
