@@ -150,7 +150,7 @@ function SortableBannerItem({
         <>
           {banner ? (
             <div className="flex-1 flex flex-col">
-              <div className="relative w-full aspect-[3/4] mb-3 overflow-hidden rounded-lg">
+              <div className="relative w-full aspect-[4/5] mb-3 overflow-hidden rounded-lg bg-gray-100">
                 <img
                   src={banner.imageUrl}
                   alt={banner.title || 'Banner'}
@@ -447,6 +447,7 @@ export default function AdminPage() {
             <div>
               <h2 className="text-2xl font-semibold text-[#1d1d1f]">Baneri (9 mesta)</h2>
               <p className="text-sm text-gray-600 mt-1">Prevuci banere da promeniš njihov redosled</p>
+              <p className="text-xs text-gray-500 mt-1">Preporučene dimenzije: 1080 × 1350px (4:5 aspect ratio)</p>
             </div>
             {hasUnsavedChanges && (
               <button

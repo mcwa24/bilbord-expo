@@ -21,7 +21,7 @@ export default async function Home() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto auto-rows-max">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {banners.map((banner) => (
               <Link
                 key={banner.id}
@@ -30,11 +30,11 @@ export default async function Home() {
                 rel="noopener noreferrer"
                 className="block group"
               >
-                <div className="relative w-full overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="relative w-full aspect-[4/5] overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gray-100">
                   <img
                     src={banner.imageUrl}
                     alt={banner.title || 'Banner'}
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </Link>
