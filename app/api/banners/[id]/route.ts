@@ -31,7 +31,6 @@ export async function PUT(
 
     return NextResponse.json(banner);
   } catch (error) {
-    console.error('Error updating banner:', error);
     return NextResponse.json(
       { error: 'Failed to update banner' },
       { status: 500 }
@@ -48,7 +47,6 @@ export async function DELETE(
     await deleteBanner(id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting banner:', error);
     return NextResponse.json(
       { error: 'Failed to delete banner' },
       { status: 500 }

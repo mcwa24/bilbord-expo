@@ -7,7 +7,6 @@ export async function GET() {
     const banners = await getBanners();
     return NextResponse.json(banners);
   } catch (error) {
-    console.error('Error fetching banners:', error);
     return NextResponse.json(
       { error: 'Failed to fetch banners' },
       { status: 500 }
@@ -40,7 +39,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newBanner, { status: 201 });
   } catch (error) {
-    console.error('Error adding banner:', error);
     return NextResponse.json(
       { error: 'Failed to add banner' },
       { status: 500 }

@@ -150,11 +150,18 @@ function SortableBannerItem({
         <>
           {banner ? (
             <div className="flex-1 flex flex-col">
-              <div className="relative w-full aspect-[4/5] mb-3 overflow-hidden rounded-lg bg-gray-100">
+              <div 
+                className="relative w-full aspect-[4/5] mb-3 overflow-hidden rounded-lg bg-gray-100"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+              >
                 <img
                   src={banner.imageUrl}
                   alt={banner.title || 'Banner'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover select-none pointer-events-none"
+                  draggable="false"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
                 />
               </div>
               <div className="flex-1 flex flex-col">
@@ -239,7 +246,7 @@ export default function AdminPage() {
         setBanners(bannersArray);
       }
     } catch (error) {
-      console.error('Error fetching banners:', error);
+      // Error handled silently
     } finally {
       setLoading(false);
     }
@@ -287,7 +294,6 @@ export default function AdminPage() {
         fetchBanners();
       }
     } catch (error) {
-      console.error('Error saving banner positions:', error);
       alert('Greška pri čuvanju pozicija.');
       fetchBanners();
     } finally {
@@ -313,7 +319,6 @@ export default function AdminPage() {
         alert('Greška pri upload-u slike.');
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
       alert('Greška pri upload-u slike.');
     } finally {
       setUploading(false);
@@ -364,7 +369,6 @@ export default function AdminPage() {
         alert('Greška pri čuvanju banera.');
       }
     } catch (error) {
-      console.error('Error saving banner:', error);
       alert('Greška pri čuvanju banera.');
     }
   };
@@ -388,7 +392,6 @@ export default function AdminPage() {
         alert('Greška pri brisanju banera.');
       }
     } catch (error) {
-      console.error('Error deleting banner:', error);
       alert('Greška pri brisanju banera.');
     }
   };

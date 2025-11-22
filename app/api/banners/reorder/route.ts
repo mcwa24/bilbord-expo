@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
         .eq('id', parseInt(id));
       
       if (error) {
-        console.error(`Error updating banner ${id}:`, error);
         throw error;
       }
     });
@@ -30,7 +29,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error reordering banners:', error);
     return NextResponse.json(
       { error: 'Failed to reorder banners' },
       { status: 500 }

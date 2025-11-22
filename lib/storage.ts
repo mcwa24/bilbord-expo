@@ -11,11 +11,8 @@ export async function getBanners(): Promise<Banner[]> {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching banners:', error);
       return [];
     }
-
-    console.log('Fetched banners:', data?.length || 0);
     
     const mapped = (data || []).map((banner: any) => ({
       id: banner.id.toString(),
@@ -26,10 +23,8 @@ export async function getBanners(): Promise<Banner[]> {
       position: banner.position ?? null,
     }));
     
-    console.log('Mapped banners:', mapped.length);
     return mapped;
   } catch (error) {
-    console.error('Error fetching banners:', error);
     return [];
   }
 }
@@ -49,12 +44,10 @@ export async function saveBanners(banners: Banner[]): Promise<void> {
     if (bannersToInsert.length > 0) {
       const { error } = await supabase.from('banners').insert(bannersToInsert);
       if (error) {
-        console.error('Error saving banners:', error);
         throw error;
       }
     }
   } catch (error) {
-    console.error('Error saving banners:', error);
     throw error;
   }
 }
@@ -69,7 +62,6 @@ export async function addBanner(banner: Banner): Promise<Banner> {
     }).select().single();
 
     if (error) {
-      console.error('Error adding banner:', error);
       throw error;
     }
 
@@ -82,7 +74,6 @@ export async function addBanner(banner: Banner): Promise<Banner> {
       position: data.position ?? null,
     };
   } catch (error) {
-    console.error('Error adding banner:', error);
     throw error;
   }
 }
@@ -101,11 +92,9 @@ export async function updateBanner(id: string, banner: Banner): Promise<void> {
       .eq('id', bannerId);
 
     if (error) {
-      console.error('Error updating banner:', error);
       throw error;
     }
   } catch (error) {
-    console.error('Error updating banner:', error);
     throw error;
   }
 }
@@ -119,11 +108,9 @@ export async function deleteBanner(id: string): Promise<void> {
       .eq('id', bannerId);
 
     if (error) {
-      console.error('Error deleting banner:', error);
       throw error;
     }
   } catch (error) {
-    console.error('Error deleting banner:', error);
     throw error;
   }
 }
