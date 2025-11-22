@@ -43,17 +43,17 @@ export default function AdminPage() {
   const handleFileUpload = async (file: File) => {
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
 
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData,
+        body: uploadFormData,
       });
 
       if (response.ok) {
         const data = await response.json();
-        setFormData({ ...formData, imageUrl: data.url });
+        setFormData((prev) => ({ ...prev, imageUrl: data.url }));
       } else {
         alert('Greška pri upload-u slike.');
       }
