@@ -60,7 +60,7 @@ export default function Header() {
               href="/"
               className={`${pathname === "/" ? "underline font-semibold" : ""} text-[#1d1d1f] hover:underline transition`}
             >
-              Početna
+              Naslovna
             </Link>
             <Link
               href="https://bilbord.rs/"
@@ -77,6 +77,22 @@ export default function Header() {
               className="text-[#1d1d1f] hover:underline transition"
             >
               Hub
+            </Link>
+            <Link
+              href="https://bilbord.rs/kontakt/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#1d1d1f] hover:underline transition"
+            >
+              Kontakt
+            </Link>
+            <Link
+              href="https://bilbord.rs/pretplate/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#1d1d1f] hover:underline transition"
+            >
+              Cene
             </Link>
             {isLoggedIn ? (
               <Link
@@ -118,33 +134,31 @@ export default function Header() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
-                className="xl:hidden fixed top-4 right-4 w-80 bg-white shadow-2xl z-50 rounded-2xl"
+                className="xl:hidden fixed top-4 right-4 bg-black shadow-2xl z-50 rounded-lg w-auto"
               >
-                <div className="p-6 pb-6">
-                  <div className="flex justify-end mb-6">
-                    <button 
-                      onClick={() => setIsMenuOpen(false)}
-                      className="p-2 hover:bg-gray-100 rounded-full transition"
-                      aria-label="Close menu"
-                    >
-                      <X size={24} className="text-[#1d1d1f]" />
-                    </button>
-                  </div>
+                <div className="p-6 pb-6 relative">
+                  <button 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="absolute top-2 right-2 p-2 hover:bg-gray-800 rounded-full transition"
+                    aria-label="Close menu"
+                  >
+                    <X size={24} className="text-white" />
+                  </button>
 
-                  <div className="space-y-0.5">
+                  <div className="space-y-0.5 mt-8 text-right">
                     <Link
                       href="/"
                       onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition`}
                     >
-                      Početna
+                      Naslovna
                     </Link>
                     <Link
                       href="https://bilbord.rs/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition"
+                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
                     >
                       Portal
                     </Link>
@@ -153,15 +167,33 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition"
+                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
                     >
                       Hub
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/kontakt/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
+                    >
+                      Kontakt
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/pretplate/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
+                    >
+                      Cene
                     </Link>
                     {isLoggedIn ? (
                       <Link
                         href="/admin"
                         onClick={() => setIsMenuOpen(false)}
-                        className={`${pathname === "/admin" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                        className="block mt-4 px-8 py-3 bg-[#f9c344] hover:bg-[#f0b830] text-[#1d1d1f] font-medium rounded-full transition-colors duration-200 text-center"
                       >
                         Admin
                       </Link>
@@ -169,7 +201,7 @@ export default function Header() {
                       <Link
                         href="/prijava"
                         onClick={() => setIsMenuOpen(false)}
-                        className={`${pathname === "/prijava" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                        className="block mt-4 px-8 py-3 bg-[#f9c344] hover:bg-[#f0b830] text-[#1d1d1f] font-medium rounded-full transition-colors duration-200 text-center"
                       >
                         Prijava
                       </Link>
