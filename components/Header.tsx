@@ -1,17 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { isAdmin } from "@/lib/admin";
 
 export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const isAdminPage = pathname?.startsWith('/admin');
+
+  useEffect(() => {
+    setIsLoggedIn(isAdmin());
+    
+    // Listen for storage changes (when user logs in/out in another tab)
+    const handleStorageChange = () => {
+      setIsLoggedIn(isAdmin());
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check on pathname change (when navigating)
+    const interval = setInterval(() => {
+      setIsLoggedIn(isAdmin());
+    }, 1000);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [pathname]);
 
   return (
     <header className={`w-full ${isAdminPage ? 'bg-white border-b border-gray-200' : 'bg-transparent absolute top-0 left-0 right-0'} z-50`}>
@@ -55,12 +78,21 @@ export default function Header() {
             >
               Hub
             </Link>
-            <Link
-              href="/admin"
-              className="ml-2 px-8 py-4 rounded-full text-base font-medium text-[#1d1d1f] bg-[#f9c344] hover:bg-[#f0b830] transition"
-            >
-              Admin
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/admin"
+                className="ml-2 px-8 py-4 rounded-full text-base font-medium text-[#1d1d1f] bg-[#f9c344] hover:bg-[#f0b830] transition"
+              >
+                Admin
+              </Link>
+            ) : (
+              <Link
+                href="/prijava"
+                className="ml-2 px-8 py-4 rounded-full text-base font-medium text-[#1d1d1f] bg-[#f9c344] hover:bg-[#f0b830] transition"
+              >
+                Prijava
+              </Link>
+            )}
           </nav>
 
           <div className="xl:hidden z-50">
@@ -125,13 +157,23 @@ export default function Header() {
                     >
                       Hub
                     </Link>
-                    <Link
-                      href="/admin"
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/admin" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
-                    >
-                      Admin
-                    </Link>
+                    {isLoggedIn ? (
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`${pathname === "/admin" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                      >
+                        Admin
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/prijava"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`${pathname === "/prijava" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
+                      >
+                        Prijava
+                      </Link>
+                    )}
                   </div>
                 </div>
               </motion.div>

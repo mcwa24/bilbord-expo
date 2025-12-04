@@ -520,6 +520,8 @@ export default function AdminPage() {
             <button
               onClick={() => {
                 logoutAdmin();
+                // Trigger storage event to update header
+                window.dispatchEvent(new Event('storage'));
                 router.push('/prijava');
               }}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
