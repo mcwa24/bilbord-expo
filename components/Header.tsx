@@ -40,6 +40,22 @@ export default function Header() {
               Početna
             </Link>
             <Link
+              href="https://bilbord.rs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#1d1d1f] hover:underline transition"
+            >
+              Portal
+            </Link>
+            <Link
+              href="https://hub.bilbord.rs/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#1d1d1f] hover:underline transition"
+            >
+              Hub
+            </Link>
+            <Link
               href="/admin"
               className="ml-2 px-8 py-4 rounded-full text-base font-medium text-[#1d1d1f] bg-[#f9c344] hover:bg-[#f0b830] transition"
             >
@@ -90,6 +106,24 @@ export default function Header() {
                       className={`${pathname === "/" ? "underline font-semibold" : ""} block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition`}
                     >
                       Početna
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition"
+                    >
+                      Portal
+                    </Link>
+                    <Link
+                      href="https://hub.bilbord.rs/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-[#1d1d1f] py-2 px-2 text-base rounded-md hover:bg-gray-50 transition"
+                    >
+                      Hub
                     </Link>
                     <Link
                       href="/admin"
