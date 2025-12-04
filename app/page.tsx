@@ -1,9 +1,12 @@
 import { getBanners } from '@/lib/storage';
 import Link from 'next/link';
 import BannersClient from '@/components/BannersClient';
+import { Banner } from '@/types/banner';
+
+export const dynamic = 'force-dynamic'; // Force dynamic rendering to always show latest banners
 
 export default async function Home() {
-  let banners = [];
+  let banners: Banner[] = [];
   
   try {
     banners = await getBanners();

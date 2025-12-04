@@ -66,7 +66,7 @@ export async function getBanners(): Promise<Banner[]> {
           'Content-Type': 'application/json',
           'Prefer': 'return=representation',
         },
-        cache: 'no-store', // Always fetch fresh data
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
       }
     );
 
