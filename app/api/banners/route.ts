@@ -7,6 +7,7 @@ export async function GET() {
     const banners = await getBanners();
     return NextResponse.json(banners);
   } catch (error) {
+    console.error('Error fetching banners:', error);
     return NextResponse.json(
       { error: 'Failed to fetch banners' },
       { status: 500 }
@@ -17,7 +18,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { imageUrl, link, title, position } = body;
+    const { imageUrl, link, title, expiresAt } = body;
 
     if (!imageUrl || !link) {
       return NextResponse.json(
@@ -32,13 +33,14 @@ export async function POST(request: NextRequest) {
       link,
       title: title || '',
       createdAt: new Date().toISOString(),
-      position: position ?? null,
+      expiresAt: expiresAt || null,
     };
 
     const newBanner = await addBanner(bannerToAdd);
 
     return NextResponse.json(newBanner, { status: 201 });
   } catch (error) {
+    console.error('Error adding banner:', error);
     return NextResponse.json(
       { error: 'Failed to add banner' },
       { status: 500 }

@@ -9,7 +9,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { imageUrl, link, title, position } = body;
+    const { imageUrl, link, title, expiresAt } = body;
 
     if (!imageUrl || !link) {
       return NextResponse.json(
@@ -24,13 +24,14 @@ export async function PUT(
       link,
       title: title || '',
       createdAt: new Date().toISOString(),
-      position: position ?? null,
+      expiresAt: expiresAt || null,
     };
 
     await updateBanner(id, banner);
 
     return NextResponse.json(banner);
   } catch (error) {
+    console.error('Error updating banner:', error);
     return NextResponse.json(
       { error: 'Failed to update banner' },
       { status: 500 }
@@ -47,6 +48,7 @@ export async function DELETE(
     await deleteBanner(id);
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Error deleting banner:', error);
     return NextResponse.json(
       { error: 'Failed to delete banner' },
       { status: 500 }

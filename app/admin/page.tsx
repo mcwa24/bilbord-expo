@@ -15,6 +15,7 @@ export default function AdminPage() {
     imageUrl: '',
     link: '',
     title: '',
+    expiresAt: '',
   });
   const [uploading, setUploading] = useState(false);
 
@@ -85,6 +86,7 @@ export default function AdminPage() {
         imageUrl: formData.imageUrl,
         link: formData.link,
         title: formData.title || '',
+        expiresAt: formData.expiresAt || null,
       };
 
       let response;
@@ -110,7 +112,7 @@ export default function AdminPage() {
 
       if (response.ok) {
         setEditingIndex(null);
-        setFormData({ imageUrl: '', link: '', title: '' });
+        setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
         fetchBanners();
         alert('Baner je uspešno sačuvan!');
       } else {
@@ -149,13 +151,18 @@ export default function AdminPage() {
   const startEditing = (index: number) => {
     const banner = banners[index];
     if (banner) {
+      // Format expiresAt date for input field (YYYY-MM-DDTHH:mm)
+      const expiresAtValue = banner.expiresAt 
+        ? new Date(banner.expiresAt).toISOString().slice(0, 16)
+        : '';
       setFormData({
         imageUrl: banner.imageUrl,
         link: banner.link,
         title: banner.title || '',
+        expiresAt: expiresAtValue,
       });
     } else {
-      setFormData({ imageUrl: '', link: '', title: '' });
+      setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
     }
     setEditingIndex(index);
   };
@@ -220,11 +227,13 @@ export default function AdminPage() {
                           className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-[#1d1d1f]"
                         />
                         {formData.imageUrl && (
-                          <img
-                            src={formData.imageUrl}
-                            alt="Preview"
-                            className="mt-2 w-full h-32 object-cover rounded"
-                          />
+                          <div className="mt-2 w-full aspect-[3/4] overflow-hidden rounded-lg border border-gray-200">
+                            <img
+                              src={formData.imageUrl}
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         )}
                       </div>
 
@@ -242,6 +251,22 @@ export default function AdminPage() {
                         />
                       </div>
 
+                      <div>
+                        <label className="block text-sm font-medium text-[#1d1d1f] mb-1">
+                          Datum isteka (opciono)
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={formData.expiresAt}
+                          onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-[#1d1d1f]"
+                          placeholder="Izaberi datum i vreme"
+                        />
+                        <p className="mt-1 text-xs text-gray-500">
+                          Ako se izabere datum, baner će se automatski obrisati kada istekne.
+                        </p>
+                      </div>
+
                       <div className="flex gap-2 mt-auto">
                         <button
                           type="submit"
@@ -254,7 +279,7 @@ export default function AdminPage() {
                           type="button"
                           onClick={() => {
                             setEditingIndex(null);
-                            setFormData({ imageUrl: '', link: '', title: '' });
+                            setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
                           }}
                           className="px-4 py-2 bg-gray-200 text-[#1d1d1f] rounded-lg hover:bg-gray-300 transition-colors duration-200"
                         >
@@ -275,6 +300,11 @@ export default function AdminPage() {
                           </div>
                           <div className="flex-1 flex flex-col">
                             <p className="text-sm text-[#222] truncate mb-2">{banner.link}</p>
+                            {banner.expiresAt && (
+                              <p className="text-xs text-orange-600 mb-2">
+                                Ističe: {new Date(banner.expiresAt).toLocaleString('sr-RS')}
+                              </p>
+                            )}
                             <div className="flex gap-2 mt-auto">
                               <button
                                 onClick={() => startEditing(index)}
@@ -315,3 +345,4 @@ export default function AdminPage() {
     </main>
   );
 }
+

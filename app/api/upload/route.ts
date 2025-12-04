@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
       });
 
     if (error) {
+      console.error('Error uploading to Supabase:', error);
       return NextResponse.json(
         { error: 'Failed to upload file' },
         { status: 500 }
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
       url: urlData.publicUrl,
     });
   } catch (error) {
+    console.error('Error uploading file:', error);
     return NextResponse.json(
       { error: 'Failed to upload file' },
       { status: 500 }

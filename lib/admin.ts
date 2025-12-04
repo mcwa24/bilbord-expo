@@ -1,32 +1,26 @@
-'use client'
+// Simple admin authentication using localStorage
+// In production, you should use proper authentication (e.g., Supabase Auth)
 
-const ADMIN_USERNAME = 'admin'
-const ADMIN_PASSWORD = 'bilbord2024!'
-const ADMIN_SESSION_KEY = 'bilbord_expo_admin_session'
+const ADMIN_KEY = 'bilbord_admin_authenticated';
 
 export function isAdmin(): boolean {
-  if (typeof window === 'undefined') return false
-  return localStorage.getItem(ADMIN_SESSION_KEY) === 'true'
-}
-
-export function setAdminSession(value: boolean) {
-  if (typeof window === 'undefined') return
-  if (value) {
-    localStorage.setItem(ADMIN_SESSION_KEY, 'true')
-  } else {
-    localStorage.removeItem(ADMIN_SESSION_KEY)
+  if (typeof window === 'undefined') {
+    return false; // Server-side: always false
   }
+  return localStorage.getItem(ADMIN_KEY) === 'true';
 }
 
-export function loginAdmin(username: string, password: string): boolean {
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    setAdminSession(true)
-    return true
+export function loginAdmin(): void {
+  if (typeof window === 'undefined') {
+    return;
   }
-  return false
+  localStorage.setItem(ADMIN_KEY, 'true');
 }
 
-export function logoutAdmin() {
-  setAdminSession(false)
+export function logoutAdmin(): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.removeItem(ADMIN_KEY);
 }
 

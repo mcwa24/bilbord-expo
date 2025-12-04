@@ -2,9 +2,8 @@ export interface Banner {
   id: string;
   imageUrl: string;
   link: string;
-  title?: string;
+  title: string;
   createdAt: string;
-  position?: number;
+  expiresAt?: string | null; // Optional expiration date
 }
-
 

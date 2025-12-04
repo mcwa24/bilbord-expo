@@ -1,7 +1,15 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Uslovi Poslovanja | Bilbord Expo',
+  description: 'Uslovi poslovanja Bilbord Expo platforme. Pravila i uslovi korišćenja naše platforme za izložbu banera.',
+  keywords: 'uslovi poslovanja, pravila, uslovi korišćenja, terms of service',
+}
+
 export default function UsloviPage() {
   return (
     <div className="min-h-screen bg-white pt-32 pb-16">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container-custom max-w-4xl">
         <h1 className="text-4xl md:text-5xl font-bold text-[#1d1d1f] mb-8">
           Uslovi Poslovanja
         </h1>
@@ -12,7 +20,7 @@ export default function UsloviPage() {
               Prihvatljivost materijala
             </h2>
             <p className="mb-2">
-              PR saopštenja koja se dostavljaju moraju biti relevantna za tematiku portala.
+              Baneri koji se dostavljaju moraju biti relevantni za tematiku portala i odgovarati profesionalnim standardima.
             </p>
             <p className="mb-2">
               Sadržaj mora biti originalan i ne sme predstavljati kopiju već objavljenih radova. Sva pravila objavljivanja moraju biti ispoštovana u svakom trenutku.
@@ -24,7 +32,10 @@ export default function UsloviPage() {
               Kvalitet sadržaja
             </h2>
             <p className="mb-2">
-              Tekst PR saopštenja treba da bude jasan, gramatički ispravan i prilagođen čitaocima Bilbord Magazine-a. Saopštenja mogu sadržati fotografije i multimedijalne materijale uz obavezno poštovanje autorskih i licencnih prava.
+              Baneri treba da budu visokog kvaliteta, jasan i profesionalan dizajn. Slike moraju biti u odgovarajućem formatu i rezoluciji za web prikaz.
+            </p>
+            <p className="mb-2">
+              Baneri mogu sadržati fotografije i multimedijalne materijale uz obavezno poštovanje autorskih i licencnih prava.
             </p>
           </section>
 
@@ -33,7 +44,7 @@ export default function UsloviPage() {
               Korisnički sadržaj i licenciranje
             </h2>
             <p className="mb-2">
-              Slanjem sadržaja na objavu korisnik daje portalu Bilbord Magazine neograničenu, globalnu, neopozivu, trajnu i sublicencibilnu licencu za korišćenje, reprodukciju, modifikaciju, distribuciju, prikazivanje i izvođenje sadržaja.
+              Slanjem banera na objavu korisnik daje portalu Bilbord Expo neograničenu, globalnu, neopozivu, trajnu i sublicencibilnu licencu za korišćenje, reprodukciju, modifikaciju, distribuciju, prikazivanje i izvođenje sadržaja.
             </p>
             <p className="mb-2">
               Korisnik se slaže da nema pravo da zahteva uklanjanje ili brisanje već objavljenog sadržaja, osim ako je to unapred definisano pravilima portala ili ako portal sam odluči da sadržaj ukloni.
@@ -42,58 +53,22 @@ export default function UsloviPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-[#1d1d1f] mb-4">
-              Bilbord Hub platforma
-            </h2>
-            <p className="mb-2">
-              Slanjem PR saopštenja putem e-pošte ili formulara za objavu, korisnik se saglašava da portal Bilbord Magazine može taj sadržaj automatski postaviti i na platformu Bilbord Hub, bez obzira na to da li korisnik ima aktivnu pretplatu na Bilbord Portalu ili ne.
-            </p>
-            <p className="mb-2">
-              Bilbord Magazine zadržava pravo da ukloni ili arhivira sadržaj sa Bilbord Hub platforme u bilo kom trenutku, kao i da primenjuje ista pravila zadržavanja sadržaja kao i na glavnom portalu (minimalno 6 meseci za plaćene objave).
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-[#1d1d1f] mb-4">
               Pravo na odbijanje objave
             </h2>
             <p className="mb-2">
-              Redakcija zadržava pravo da odbije objavu PR saopštenja ukoliko proceni da sadržaj nije usklađen sa uređivačkom politikom ili interesima portala.
+              Administracija zadržava pravo da odbije objavu banera ukoliko proceni da sadržaj nije usklađen sa politikom portala ili interesima korisnika.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-[#1d1d1f] mb-4">
-              Rokovi, vreme objave i brisanje
+              Rokovi i brisanje
             </h2>
             <p className="mb-2">
-              Objave se realizuju u skladu sa rasporedom redakcije.
+              Baneri se prikazuju odmah nakon odobrenja od strane administracije.
             </p>
             <p className="mb-2">
-              Rokovi za dostavljanje materijala mogu biti promenjeni i biće definisani u komunikaciji sa uredništvom.
-            </p>
-            <p className="mb-2">
-              Plaćeni sadržaj se čuva i ostaje vidljiv na portalu najmanje šest meseci od datuma objavljivanja.
-            </p>
-            <p className="mb-2">
-              Portal zadržava pravo da nakon proteka minimalnog perioda ukloni, arhivira ili optimizuje sadržaj radi tehničke efikasnosti, SEO optimizacije ili reorganizacije baze.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-[#1d1d1f] mb-4">
-              Redakcijske izmene i SEO optimizacija
-            </h2>
-            <p className="mb-2">
-              Bilbord Magazine zadržava pravo da izvrši uređivačke, gramatičke, stilske i strukturalne izmene dostavljenog materijala, bez menjanja suštine poruke. Portal takođe može prilagoditi naslove, podnaslove, ključne reči i druge elemente radi SEO optimizacije, uz očuvanje autentičnog konteksta i namere autora.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-[#1d1d1f] mb-4">
-              Promocije i komercijalne ponude
-            </h2>
-            <p className="mb-2">
-              Portal zadržava pravo da menja ili ukida promotivne akcije, cene i dodatne ponude u bilo kom trenutku.
+              Portal zadržava pravo da u bilo kom trenutku ukloni, arhivira ili optimizuje sadržaj radi tehničke efikasnosti, SEO optimizacije ili reorganizacije baze.
             </p>
           </section>
 
@@ -102,7 +77,10 @@ export default function UsloviPage() {
               Odricanje od odgovornosti
             </h2>
             <p className="mb-2">
-              Bilbord Magazine ne snosi odgovornost za tačnost informacija i tvrdnji iznetih u PR saopštenjima. Odgovornost za istinitost i verodostojnost dostavljenog sadržaja snosi isključivo podnosilac saopštenja.
+              Bilbord Expo ne snosi odgovornost za tačnost informacija i tvrdnji iznetih u banerima. Odgovornost za istinitost i verodostojnost dostavljenog sadržaja snosi isključivo podnosilac banera.
+            </p>
+            <p className="mb-2">
+              Portal ne garantuje da će linkovi u banerima uvek biti funkcionalni ili da će vodi ka validnim stranicama.
             </p>
           </section>
 
@@ -123,7 +101,10 @@ export default function UsloviPage() {
               Kontakt
             </h2>
             <p className="mb-2">
-              Za sva pitanja i dodatne informacije u vezi sa objavom PR saopštenja, korisnici mogu kontaktirati redakciju putem e-pošte ili formulara na portalu.
+              Za sva pitanja i dodatne informacije u vezi sa objavom banera, korisnici mogu kontaktirati administraciju putem{' '}
+              <a href="https://bilbord.rs/kontakt/" target="_blank" rel="noopener noreferrer" className="text-[#1d1d1f] hover:underline">
+                kontakt stranice
+              </a>.
             </p>
           </section>
         </div>
