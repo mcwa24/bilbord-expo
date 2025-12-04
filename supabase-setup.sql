@@ -25,6 +25,17 @@ BEGIN
   END IF;
 END $$;
 
+-- Dodaj kolonu position za ručno rearanžiranje banera
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'banners' AND column_name = 'position'
+  ) THEN
+    ALTER TABLE banners ADD COLUMN position INTEGER NULL;
+  END IF;
+END $$;
+
 -- 2. Omogući RLS (Row Level Security) na tabeli banners
 ALTER TABLE banners ENABLE ROW LEVEL SECURITY;
 

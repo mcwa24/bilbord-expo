@@ -5,5 +5,6 @@ export interface Banner {
   title: string;
   createdAt: string;
   expiresAt?: string | null; // Optional expiration date
+  position?: number | null; // Position for manual ordering
 }
 

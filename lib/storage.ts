@@ -56,17 +56,18 @@ export async function getBanners(): Promise<Banner[]> {
     
     // Use REST API directly for better RLS compatibility
     // Fetch all banners first, then filter expired ones
-    // Order by created_at DESC so newest banners appear first
+    // Order by position ASC if set, otherwise by created_at DESC (newest first)
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/banners?select=*&order=created_at.desc`,
+      `${supabaseUrl}/rest/v1/banners?select=*&order=position.asc.nullslast,created_at.desc`,
       {
         headers: {
           'apikey': supabaseAnonKey,
           'Authorization': `Bearer ${supabaseAnonKey}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation',
+          'Cache-Control': 'no-store',
         },
-        next: { revalidate: 60 }, // Revalidate every 60 seconds
+        cache: 'no-store', // Always fetch fresh data
       }
     );
 
@@ -78,6 +79,7 @@ export async function getBanners(): Promise<Banner[]> {
 
     const data = await response.json();
     console.log('Fetched banners count (HTTP):', data?.length || 0);
+    console.log('Raw banners with positions:', data?.map((b: any) => ({ id: b.id, position: b.position, positionType: typeof b.position })));
     
     // Filter out expired banners
     const now = new Date();
@@ -87,13 +89,27 @@ export async function getBanners(): Promise<Banner[]> {
       return expiresAt > now; // Only include if expiration is in the future
     });
     
-    return activeBanners.map((banner: any) => ({
+    // Sort: first by position (if set), then by created_at DESC
+    const sortedBanners = activeBanners.sort((a: any, b: any) => {
+      // If both have position, sort by position
+      if (a.position !== null && b.position !== null) {
+        return a.position - b.position;
+      }
+      // If only one has position, it comes first
+      if (a.position !== null && b.position === null) return -1;
+      if (a.position === null && b.position !== null) return 1;
+      // If neither has position, sort by created_at DESC (newest first)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    
+    return sortedBanners.map((banner: any) => ({
       id: banner.id.toString(),
       imageUrl: banner.image_url,
       link: banner.link,
       title: banner.title || '',
       createdAt: banner.created_at,
       expiresAt: banner.expires_at || null,
+      position: banner.position !== undefined && banner.position !== null ? banner.position : null,
     }));
   } catch (error) {
     console.error('Error fetching banners (HTTP):', error);
@@ -116,7 +132,8 @@ async function getBannersFallback(): Promise<Banner[]> {
     const { data, error } = await supabase
       .from('banners')
       .select('*')
-      .order('created_at', { ascending: false }); // Newest first
+      .order('position', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false }); // Newest first if no position
 
     if (error) {
       console.error('Error fetching banners (fallback):', error);
@@ -134,13 +151,27 @@ async function getBannersFallback(): Promise<Banner[]> {
       return expiresAt > now; // Only include if expiration is in the future
     });
     
-    return activeBanners.map((banner: any) => ({
+    // Sort: first by position (if set), then by created_at DESC
+    const sortedBanners = activeBanners.sort((a: any, b: any) => {
+      // If both have position, sort by position
+      if (a.position !== null && b.position !== null) {
+        return a.position - b.position;
+      }
+      // If only one has position, it comes first
+      if (a.position !== null && b.position === null) return -1;
+      if (a.position === null && b.position !== null) return 1;
+      // If neither has position, sort by created_at DESC (newest first)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    
+    return sortedBanners.map((banner: any) => ({
       id: banner.id.toString(),
       imageUrl: banner.image_url,
       link: banner.link,
       title: banner.title || '',
       createdAt: banner.created_at,
       expiresAt: banner.expires_at || null,
+      position: banner.position !== undefined && banner.position !== null ? banner.position : null,
     }));
   } catch (error) {
     console.error('Error fetching banners (fallback):', error);
@@ -180,6 +211,7 @@ export async function addBanner(banner: Banner): Promise<Banner> {
       link: banner.link,
       title: banner.title || '',
       expires_at: banner.expiresAt || null,
+      position: banner.position !== undefined && banner.position !== null ? banner.position : null,
     }).select().single();
 
     if (error) {
@@ -194,6 +226,7 @@ export async function addBanner(banner: Banner): Promise<Banner> {
       title: data.title || '',
       createdAt: data.created_at,
       expiresAt: data.expires_at || null,
+      position: data.position || null,
     };
   } catch (error) {
     console.error('Error adding banner:', error);
@@ -211,6 +244,7 @@ export async function updateBanner(id: string, banner: Banner): Promise<void> {
         link: banner.link,
         title: banner.title || '',
         expires_at: banner.expiresAt || null,
+        position: banner.position !== undefined ? banner.position : null,
       })
       .eq('id', bannerId);
 
