@@ -24,7 +24,7 @@ export default function Footer() {
             <div className="max-w-6xl mx-auto px-8">
 
                     <div className="mb-10 flex items-center justify-between">
-                        <Link href="/">
+                        <Link href="https://bilbord.rs/" target="_blank" rel="noopener noreferrer">
                             <Image
                                 src="/FINAL LOGO BILBORD-06.png"
                                 alt="Bilbord Expo Logo"

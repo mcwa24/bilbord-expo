@@ -41,7 +41,7 @@ export default function Header() {
       <div className="w-full">
         <div className="w-full px-4 md:px-6 lg:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="/">
+            <Link href="https://bilbord.rs/" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/FINAL LOGO BILBORD-06.png"
                 alt="Bilbord Expo Logo"

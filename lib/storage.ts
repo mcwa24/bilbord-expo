@@ -4,15 +4,18 @@ import { supabase } from './supabase-server';
 // Delete expired banners
 export async function deleteExpiredBanners(): Promise<void> {
   try {
-    const now = new Date().toISOString();
+    // Calculate date 5 days ago (banners expire 5 days after their expiration date)
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const fiveDaysAgoISO = fiveDaysAgo.toISOString();
     
-    // Only delete banners where expires_at is NOT null AND expires_at < now
-    // This ensures we don't delete banners without expiration dates
+    // Only delete banners where expires_at is NOT null AND expires_at < (now - 5 days)
+    // This ensures banners stay active for 5 days after their expiration date
     const { data, error } = await supabase
       .from('banners')
       .select('id, expires_at')
       .not('expires_at', 'is', null)
-      .lt('expires_at', now);
+      .lt('expires_at', fiveDaysAgoISO);
 
     if (error) {
       console.error('Error fetching expired banners:', error);
@@ -30,7 +33,7 @@ export async function deleteExpiredBanners(): Promise<void> {
       if (deleteError) {
         console.error('Error deleting expired banners:', deleteError);
       } else {
-        console.log(`Deleted ${expiredIds.length} expired banner(s)`);
+        console.log(`Deleted ${expiredIds.length} expired banner(s) (expired more than 5 days ago)`);
       }
     }
   } catch (error) {
@@ -81,12 +84,15 @@ export async function getBanners(): Promise<Banner[]> {
     console.log('Fetched banners count (HTTP):', data?.length || 0);
     console.log('Raw banners with positions:', data?.map((b: any) => ({ id: b.id, position: b.position, positionType: typeof b.position })));
     
-    // Filter out expired banners
+    // Filter out expired banners (banners stay active for 5 days after expiration)
     const now = new Date();
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const activeBanners = (data || []).filter((banner: any) => {
       if (!banner.expires_at) return true; // No expiration date = always active
       const expiresAt = new Date(banner.expires_at);
-      return expiresAt > now; // Only include if expiration is in the future
+      // Include banner if expiration date is more recent than 5 days ago
+      return expiresAt > fiveDaysAgo;
     });
     
     // Sort: first by position (if set), then by created_at DESC
@@ -143,12 +149,15 @@ async function getBannersFallback(): Promise<Banner[]> {
 
     console.log('Fetched banners count (fallback):', data?.length || 0);
     
-    // Filter out expired banners
+    // Filter out expired banners (banners stay active for 5 days after expiration)
     const now = new Date();
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
     const activeBanners = (data || []).filter((banner: any) => {
       if (!banner.expires_at) return true; // No expiration date = always active
       const expiresAt = new Date(banner.expires_at);
-      return expiresAt > now; // Only include if expiration is in the future
+      // Include banner if expiration date is more recent than 5 days ago
+      return expiresAt > fiveDaysAgo;
     });
     
     // Sort: first by position (if set), then by created_at DESC
