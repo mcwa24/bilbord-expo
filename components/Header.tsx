@@ -55,20 +55,30 @@ export default function Header() {
             </Link>
           </div>
 
-          <nav className="hidden xl:flex items-center gap-6 text-sm md:text-base relative">
+          <nav className="hidden xl:flex items-center gap-6 text-base md:text-lg relative">
             <Link
-              href="/"
+              href="https://bilbord.rs/"
+              target="_blank"
+              rel="noopener noreferrer"
               className={`${pathname === "/" ? "underline font-semibold" : ""} text-[#1d1d1f] hover:underline transition`}
             >
               Naslovna
             </Link>
             <Link
-              href="https://bilbord.rs/"
+              href="https://bilbord.rs/teme/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#1d1d1f] hover:underline transition"
             >
-              Portal
+              Teme
+            </Link>
+            <Link
+              href="https://bilbord.rs/oglasavanje/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#1d1d1f] hover:underline transition"
+            >
+              Oglašavanje
             </Link>
             <Link
               href="https://hub.bilbord.rs/"
@@ -76,7 +86,7 @@ export default function Header() {
               rel="noopener noreferrer"
               className="text-[#1d1d1f] hover:underline transition"
             >
-              Hub
+              PR Hub
             </Link>
             <Link
               href="https://bilbord.rs/kontakt/"
@@ -85,14 +95,6 @@ export default function Header() {
               className="text-[#1d1d1f] hover:underline transition"
             >
               Kontakt
-            </Link>
-            <Link
-              href="https://bilbord.rs/pretplate/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#1d1d1f] hover:underline transition"
-            >
-              Cene
             </Link>
             {isLoggedIn ? (
               <Link
@@ -147,47 +149,49 @@ export default function Header() {
 
                   <div className="space-y-0.5 mt-8 text-right">
                     <Link
-                      href="/"
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition`}
-                    >
-                      Naslovna
-                    </Link>
-                    <Link
                       href="https://bilbord.rs/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
+                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition`}
                     >
-                      Portal
+                      Naslovna
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/teme/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition"
+                    >
+                      Teme
+                    </Link>
+                    <Link
+                      href="https://bilbord.rs/oglasavanje/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition"
+                    >
+                      Oglašavanje
                     </Link>
                     <Link
                       href="https://hub.bilbord.rs/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
+                      className="block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition"
                     >
-                      Hub
+                      PR Hub
                     </Link>
                     <Link
                       href="https://bilbord.rs/kontakt/"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
+                      className="block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition"
                     >
                       Kontakt
-                    </Link>
-                    <Link
-                      href="https://bilbord.rs/pretplate/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block text-white py-2 px-2 text-base rounded-md hover:bg-gray-800 transition"
-                    >
-                      Cene
                     </Link>
                     {isLoggedIn ? (
                       <Link
