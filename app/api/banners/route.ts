@@ -2,19 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getBanners, addBanner } from '@/lib/storage';
 import { Banner } from '@/types/banner';
 
-// Force dynamic rendering to prevent caching
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Allow caching for better performance, revalidate every 60 seconds
+export const revalidate = 60;
 
 export async function GET() {
   try {
     const banners = await getBanners();
-    console.log('API GET /api/banners - Returning banners:', banners.map(b => ({ id: b.id, position: b.position })));
     return NextResponse.json(banners, {
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
       },
     });
   } catch (error) {

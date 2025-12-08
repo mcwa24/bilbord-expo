@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Banner } from '@/types/banner';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { isAdmin, logoutAdmin } from '@/lib/admin';
 
@@ -220,11 +221,16 @@ export default function AdminPage() {
                           className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-[#1d1d1f]"
                         />
                         {formData.imageUrl && (
-                          <img
-                            src={formData.imageUrl}
-                            alt="Preview"
-                            className="mt-2 w-full h-32 object-cover rounded"
-                          />
+                          <div className="relative mt-2 w-full h-32 rounded overflow-hidden">
+                            <Image
+                              src={formData.imageUrl}
+                              alt="Preview"
+                              fill
+                              sizes="100vw"
+                              className="object-cover"
+                              quality={75}
+                            />
+                          </div>
                         )}
                       </div>
 
@@ -267,10 +273,13 @@ export default function AdminPage() {
                       {banner ? (
                         <div className="flex-1 flex flex-col">
                           <div className="relative w-full aspect-[3/4] mb-3 overflow-hidden rounded-lg">
-                            <img
+                            <Image
                               src={banner.imageUrl}
                               alt={banner.title || 'Banner'}
-                              className="w-full h-full object-cover"
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover"
+                              quality={85}
                             />
                           </div>
                           <div className="flex-1 flex flex-col">

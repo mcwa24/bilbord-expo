@@ -1,44 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Banner } from '@/types/banner';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface BannersClientProps {
   initialBanners: Banner[];
 }
 
 export default function BannersClient({ initialBanners }: BannersClientProps) {
-  const [banners, setBanners] = useState<Banner[]>(initialBanners);
-  const [loading, setLoading] = useState(false);
-
-  // Fetch banners on client-side if initial banners are empty
-  useEffect(() => {
-    if (banners.length === 0) {
-      setLoading(true);
-      fetch('/api/banners')
-        .then(res => res.json())
-        .then(data => {
-          setBanners(data || []);
-        })
-        .catch(err => {
-          console.error('Error fetching banners:', err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [banners.length]);
-
-  if (loading) {
-    return (
-      <div className="text-center py-16">
-        <p className="text-[#222] text-lg">Učitavanje banera...</p>
-      </div>
-    );
-  }
-
-  if (banners.length === 0) {
+  if (initialBanners.length === 0) {
     return (
       <div className="text-center py-16">
         <p className="text-[#222] text-lg">Nema banera za prikaz.</p>
@@ -54,7 +25,7 @@ export default function BannersClient({ initialBanners }: BannersClientProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {banners.map((banner) => (
+      {initialBanners.map((banner, index) => (
         <Link
           key={banner.id}
           href={banner.link}
@@ -63,10 +34,15 @@ export default function BannersClient({ initialBanners }: BannersClientProps) {
           className="block group"
         >
           <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <img
+            <Image
               src={banner.imageUrl}
               alt={banner.title || 'Banner'}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover"
+              loading={index < 6 ? 'eager' : 'lazy'}
+              priority={index < 3}
+              quality={85}
             />
           </div>
         </Link>
