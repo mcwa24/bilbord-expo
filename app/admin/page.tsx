@@ -34,6 +34,7 @@ export default function AdminPage() {
     link: '',
     title: '',
     expiresAt: '',
+    email: '',
   });
   const [uploading, setUploading] = useState(false);
   const [positionsChanged, setPositionsChanged] = useState(false);
@@ -165,8 +166,36 @@ export default function AdminPage() {
       }
 
       if (response.ok) {
+        const savedBanner = await response.json();
+        
+        // Send email if email is provided
+        if (formData.email && formData.email.trim()) {
+          try {
+            const emailResponse = await fetch('/api/send-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                to: formData.email.trim(),
+                bannerLink: bannerData.link,
+                bannerTitle: bannerData.title || '',
+              }),
+            });
+
+            if (emailResponse.ok) {
+              console.log('Email sent successfully');
+            } else {
+              console.error('Failed to send email:', await emailResponse.json());
+            }
+          } catch (emailError) {
+            console.error('Error sending email:', emailError);
+            // Don't block the success message if email fails
+          }
+        }
+
         setEditingIndex(null);
-        setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
+        setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
         fetchBanners();
         alert('Baner je uspešno sačuvan!');
       } else {
@@ -214,9 +243,10 @@ export default function AdminPage() {
         link: banner.link,
         title: banner.title || '',
         expiresAt: expiresAtValue,
+        email: '',
       });
     } else {
-      setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
+      setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
     }
     setEditingIndex(index);
   };
@@ -432,6 +462,22 @@ export default function AdminPage() {
               </p>
             </div>
 
+            <div>
+              <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
+                Email za obaveštenje (opciono)
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-xs text-[#1d1d1f]"
+                placeholder="email@example.com"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Ako unesete email, korisnik će dobiti obaveštenje da je baner postavljen.
+              </p>
+            </div>
+
             <div className="flex gap-2 mt-auto">
               <button
                 type="submit"
@@ -444,7 +490,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => {
                   setEditingIndex(null);
-                  setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
+                  setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
                 }}
                 className="px-3 py-1.5 bg-gray-200 text-[#1d1d1f] rounded-lg hover:bg-gray-300 transition-colors duration-200 text-xs"
               >

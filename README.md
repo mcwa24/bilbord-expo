@@ -53,4 +53,31 @@ Projekat koristi Supabase za:
 
 **Detaljne instrukcije:** Pogledaj `SUPABASE_SETUP.md`
 
+## Resend Email Setup
+
+Projekat koristi Resend API za slanje email obaveštenja kada se baner postavi na platformu.
+
+### Setup Instrukcije
+
+1. **Kreiraj Resend nalog:**
+   - Idi na [resend.com](https://resend.com) i kreiraj nalog
+   - Verifikuj domen ili koristi test domen
+
+2. **Dobij API Key:**
+   - Idi na API Keys u Resend dashboard-u
+   - Kreiraj novi API key
+
+3. **Environment Variables:**
+   - Dodaj u Vercel Dashboard:
+     - `RESEND_API_KEY` - tvoj Resend API key (isti kao u bilbord hub projektu)
+   - Za lokalni development, dodaj u `.env.local`:
+     ```
+     RESEND_API_KEY=re_xxxxx
+     ```
+   - Email se šalje sa `expo@bilbord.rs`
+
+4. **Korišćenje:**
+   - Kada kreiraš ili ažuriraš baner u admin panelu, možeš uneti email adresu u polje "Email za obaveštenje"
+   - Korisnik će dobiti email sa linkom ka baneru i linkom ka Bilbord Expo platformi
+
 
