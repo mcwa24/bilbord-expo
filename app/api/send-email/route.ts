@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { supabase } from '@/lib/supabase-server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,6 +17,35 @@ export async function POST(request: NextRequest) {
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://expo.bilbord.rs';
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://kqpmbcknztcofausqzfa.supabase.co';
+    
+    // Get logo URL from Supabase storage - try different possible locations
+    let logoUrl = `${siteUrl}/FINAL LOGO BILBORD-06.png`; // Fallback to public folder
+    
+    // Try to get logo from Supabase storage buckets
+    const possibleBuckets = ['logos', 'assets', 'images', 'public'];
+    const possiblePaths = ['bilbord-logo.png', 'logo.png', 'FINAL LOGO BILBORD-06.png'];
+    
+    for (const bucket of possibleBuckets) {
+      for (const path of possiblePaths) {
+        try {
+          const { data: logoData } = supabase.storage
+            .from(bucket)
+            .getPublicUrl(path);
+          if (logoData?.publicUrl) {
+            // Verify the URL is accessible
+            const testResponse = await fetch(logoData.publicUrl, { method: 'HEAD' });
+            if (testResponse.ok) {
+              logoUrl = logoData.publicUrl;
+              break;
+            }
+          }
+        } catch (e) {
+          // Continue to next option
+        }
+      }
+      if (logoUrl !== `${siteUrl}/FINAL LOGO BILBORD-06.png`) break;
+    }
 
     const { data, error } = await resend.emails.send({
       from: 'Bilbord Expo <expo@bilbord.rs>',
@@ -34,10 +64,10 @@ export async function POST(request: NextRequest) {
               <tr>
                 <td align="center" style="padding: 40px 20px;">
                   <table role="presentation" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                    <!-- Header -->
+                    <!-- Header with Logo -->
                     <tr>
-                      <td style="background-color: #f9c344; padding: 30px 40px; text-align: center;">
-                        <h1 style="color: #1d1d1f; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Bilbord Expo</h1>
+                      <td style="background-color: #ffffff; padding: 40px 40px 30px 40px; text-align: center; border-bottom: 1px solid #e5e5e7;">
+                        <img src="${logoUrl}" alt="Bilbord Expo" style="max-width: 200px; height: auto; display: block; margin: 0 auto;" />
                       </td>
                     </tr>
                     <!-- Content -->
