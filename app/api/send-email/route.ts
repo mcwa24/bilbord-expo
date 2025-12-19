@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await resend.emails.send({
       from: 'Bilbord Expo <expo@bilbord.rs>',
       to: to,
-      subject: 'Vaš baner je postavljen na Bilbord Expo platformu',
+      subject: '🎨 Vaš baner je postavljen na Bilbord Expo platformu',
       html: `
         <!DOCTYPE html>
         <html>

@@ -35,8 +35,8 @@ export default function AdminPage() {
     link: '',
     title: '',
     expiresAt: '',
-    email: '',
   });
+  const [globalEmail, setGlobalEmail] = useState('');
   const [uploading, setUploading] = useState(false);
   const [positionsChanged, setPositionsChanged] = useState(false);
 
@@ -170,17 +170,17 @@ export default function AdminPage() {
       if (response.ok) {
         const savedBanner = await response.json();
         
-        // Send email if email is provided
-        if (formData.email && formData.email.trim()) {
+        // Send email if global email is provided
+        if (globalEmail && globalEmail.trim()) {
           try {
-            console.log('Sending email to:', formData.email.trim());
+            console.log('Sending email to:', globalEmail.trim());
             const emailResponse = await fetch('/api/send-email', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                to: formData.email.trim(),
+                to: globalEmail.trim(),
                 bannerLink: bannerData.link,
                 bannerTitle: bannerData.title || '',
               }),
@@ -204,7 +204,7 @@ export default function AdminPage() {
         }
 
         setEditingIndex(null);
-        setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
+        setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
         fetchBanners();
       } else {
         toast.error('Greška pri čuvanju banera.');
@@ -212,6 +212,48 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error saving banner:', error);
       toast.error('Greška pri čuvanju banera.');
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!globalEmail || !globalEmail.trim()) {
+      toast.error('Molimo unesite email adresu.');
+      return;
+    }
+
+    // Find the first banner to send email about (or you can modify this logic)
+    const firstBanner = banners.find(b => b !== null);
+    if (!firstBanner) {
+      toast.error('Nema banera za slanje email-a.');
+      return;
+    }
+
+    try {
+      console.log('Sending email to:', globalEmail.trim());
+      const emailResponse = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: globalEmail.trim(),
+          bannerLink: firstBanner.link,
+          bannerTitle: firstBanner.title || '',
+        }),
+      });
+
+      const emailResult = await emailResponse.json();
+      
+      if (emailResponse.ok) {
+        console.log('Email sent successfully:', emailResult);
+        toast.success('Email je uspešno poslat!');
+      } else {
+        console.error('Failed to send email:', emailResult);
+        toast.error(`Email nije poslat: ${emailResult.error || 'Nepoznata greška'}`);
+      }
+    } catch (emailError) {
+      console.error('Error sending email:', emailError);
+      toast.error('Došlo je do greške pri slanju email-a.');
     }
   };
 
@@ -251,18 +293,12 @@ export default function AdminPage() {
         link: banner.link,
         title: banner.title || '',
         expiresAt: expiresAtValue,
-        email: '',
       });
     } else {
-      setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
+      setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
     }
     setEditingIndex(index);
   };
-
-  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFormData((prev) => ({ ...prev, email: value }));
-  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -498,27 +534,6 @@ export default function AdminPage() {
               </p>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
-                Email za obaveštenje (opciono)
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={handleEmailChange}
-                onClick={(e) => e.stopPropagation()}
-                onFocus={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-                className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-xs text-[#1d1d1f]"
-                placeholder="email@example.com"
-                autoComplete="email"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Ako unesete email, korisnik će dobiti obaveštenje da je baner postavljen.
-              </p>
-            </div>
-
             <div className="flex gap-2 mt-auto">
               <button
                 type="submit"
@@ -531,7 +546,7 @@ export default function AdminPage() {
                 type="button"
                 onClick={() => {
                   setEditingIndex(null);
-                  setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
+                  setFormData({ imageUrl: '', link: '', title: '', expiresAt: '' });
                 }}
                 className="px-3 py-1.5 bg-gray-200 text-[#1d1d1f] rounded-lg hover:bg-gray-300 transition-colors duration-200 text-xs"
               >
@@ -625,6 +640,30 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-[#1d1d1f]">Admin Panel</h1>
           <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-[#1d1d1f] whitespace-nowrap">
+                Email za obaveštenje:
+              </label>
+              <input
+                type="email"
+                value={globalEmail}
+                onChange={(e) => setGlobalEmail(e.target.value)}
+                placeholder="email@example.com"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-sm text-[#1d1d1f] w-64"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSendEmail();
+                  }
+                }}
+              />
+              <button
+                onClick={handleSendEmail}
+                disabled={!globalEmail || !globalEmail.trim()}
+                className="px-4 py-2 bg-[#f9c344] text-[#1d1d1f] rounded-lg hover:bg-[#f0b830] transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              >
+                Pošalji email
+              </button>
+            </div>
             <Link
               href="/"
               className="px-4 py-2 text-[#1d1d1f] hover:underline transition-colors duration-200"
