@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Banner } from '@/types/banner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { isAdmin, logoutAdmin } from '@/lib/admin';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   DndContext,
   closestCenter,
@@ -117,12 +118,13 @@ export default function AdminPage() {
       if (response.ok) {
         const data = await response.json();
         setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+        toast.success('Slika je uspešno upload-ovana');
       } else {
-        alert('Greška pri upload-u slike.');
+        toast.error('Greška pri upload-u slike.');
       }
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('Greška pri upload-u slike.');
+      toast.error('Greška pri upload-u slike.');
     } finally {
       setUploading(false);
     }
@@ -132,7 +134,7 @@ export default function AdminPage() {
     e.preventDefault();
     
     if (!formData.imageUrl || !formData.link) {
-      alert('Slika i link su obavezni.');
+      toast.error('Slika i link su obavezni.');
       return;
     }
 
@@ -171,6 +173,7 @@ export default function AdminPage() {
         // Send email if email is provided
         if (formData.email && formData.email.trim()) {
           try {
+            console.log('Sending email to:', formData.email.trim());
             const emailResponse = await fetch('/api/send-email', {
               method: 'POST',
               headers: {
@@ -183,27 +186,32 @@ export default function AdminPage() {
               }),
             });
 
+            const emailResult = await emailResponse.json();
+            
             if (emailResponse.ok) {
-              console.log('Email sent successfully');
+              console.log('Email sent successfully:', emailResult);
+              toast.success('Baner je uspešno sačuvan i email je poslat!');
             } else {
-              console.error('Failed to send email:', await emailResponse.json());
+              console.error('Failed to send email:', emailResult);
+              toast.error(`Baner je sačuvan, ali email nije poslat: ${emailResult.error || 'Nepoznata greška'}`);
             }
           } catch (emailError) {
             console.error('Error sending email:', emailError);
-            // Don't block the success message if email fails
+            toast.error('Baner je sačuvan, ali došlo je do greške pri slanju email-a.');
           }
+        } else {
+          toast.success('Baner je uspešno sačuvan!');
         }
 
         setEditingIndex(null);
         setFormData({ imageUrl: '', link: '', title: '', expiresAt: '', email: '' });
         fetchBanners();
-        alert('Baner je uspešno sačuvan!');
       } else {
-        alert('Greška pri čuvanju banera.');
+        toast.error('Greška pri čuvanju banera.');
       }
     } catch (error) {
       console.error('Error saving banner:', error);
-      alert('Greška pri čuvanju banera.');
+      toast.error('Greška pri čuvanju banera.');
     }
   };
 
@@ -221,13 +229,13 @@ export default function AdminPage() {
 
       if (response.ok) {
         fetchBanners();
-        alert('Baner je uspešno obrisan!');
+        toast.success('Baner je uspešno obrisan!');
       } else {
-        alert('Greška pri brisanju banera.');
+        toast.error('Greška pri brisanju banera.');
       }
     } catch (error) {
       console.error('Error deleting banner:', error);
-      alert('Greška pri brisanju banera.');
+      toast.error('Greška pri brisanju banera.');
     }
   };
 
@@ -250,6 +258,11 @@ export default function AdminPage() {
     }
     setEditingIndex(index);
   };
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, email: value }));
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -351,17 +364,17 @@ export default function AdminPage() {
           setBanners(bannersArray);
         }
         
-        // Show alert after refresh
+        // Show toast after refresh
         setTimeout(() => {
-          alert('Redosled banera je uspešno sačuvan!');
+          toast.success('Redosled banera je uspešno sačuvan!');
         }, 100);
       } else {
         console.error('Failed to save positions:', result);
-        alert(`Greška pri čuvanju redosleda banera: ${result.error || 'Nepoznata greška'}`);
+        toast.error(`Greška pri čuvanju redosleda banera: ${result.error || 'Nepoznata greška'}`);
       }
     } catch (error) {
       console.error('Error saving banner positions:', error);
-      alert(`Greška pri čuvanju redosleda banera: ${error instanceof Error ? error.message : 'Nepoznata greška'}`);
+      toast.error(`Greška pri čuvanju redosleda banera: ${error instanceof Error ? error.message : 'Nepoznata greška'}`);
     }
   };
 
@@ -374,7 +387,10 @@ export default function AdminPage() {
       transform,
       transition,
       isDragging,
-    } = useSortable({ id: index.toString(), disabled: editingIndex !== null });
+    } = useSortable({ 
+      id: index.toString(), 
+      disabled: editingIndex !== null || editingIndex === index 
+    });
 
     const style = {
       transform: CSS.Transform.toString(transform),
@@ -384,9 +400,19 @@ export default function AdminPage() {
 
     return (
       <div
-        ref={setNodeRef}
+        ref={editingIndex === index ? undefined : setNodeRef}
         style={style}
         className="border-2 border-dashed border-gray-300 rounded-xl p-3 min-h-[200px] flex flex-col relative"
+        onClick={(e) => {
+          if (editingIndex === index) {
+            e.stopPropagation();
+          }
+        }}
+        onMouseDown={(e) => {
+          if (editingIndex === index) {
+            e.stopPropagation();
+          }
+        }}
       >
         {banner && editingIndex === null && (
           <button
@@ -399,7 +425,17 @@ export default function AdminPage() {
           </button>
         )}
         {editingIndex === index ? (
-          <form onSubmit={(e) => handleSubmit(e, index)} className="space-y-3 flex-1 flex flex-col text-sm">
+          <form 
+            key={`form-${index}`}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e, index);
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            className="space-y-3 flex-1 flex flex-col text-sm"
+          >
             <div>
               <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
                 Upload slike ili URL
@@ -469,9 +505,14 @@ export default function AdminPage() {
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={handleEmailChange}
+                onClick={(e) => e.stopPropagation()}
+                onFocus={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
                 className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f9c344] focus:border-transparent text-xs text-[#1d1d1f]"
                 placeholder="email@example.com"
+                autoComplete="email"
               />
               <p className="mt-1 text-xs text-gray-500">
                 Ako unesete email, korisnik će dobiti obaveštenje da je baner postavljen.
@@ -553,6 +594,33 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-white pt-20">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#fff',
+            color: '#1d1d1f',
+            border: '1px solid #e5e5e7',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            padding: '16px',
+            fontSize: '14px',
+          },
+          success: {
+            iconTheme: {
+              primary: '#34d399',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-[#1d1d1f]">Admin Panel</h1>
@@ -596,6 +664,13 @@ export default function AdminPage() {
           
           {loading ? (
             <p className="text-[#222]">Učitavanje...</p>
+          ) : editingIndex !== null ? (
+            // When editing, disable drag and drop
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {banners.map((banner, index) => (
+                <SortableBannerItem key={index} banner={banner} index={index} />
+              ))}
+            </div>
           ) : (
             <DndContext
               sensors={sensors}
