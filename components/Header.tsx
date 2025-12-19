@@ -41,7 +41,7 @@ export default function Header() {
       <div className="w-full">
         <div className="w-full px-4 md:px-6 lg:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="https://bilbord.rs/" target="_blank" rel="noopener noreferrer">
+            <Link href="https://expo.bilbord.rs/">
               <Image
                 src="/FINAL LOGO BILBORD-06.png"
                 alt="Bilbord Expo Logo"
@@ -60,9 +60,9 @@ export default function Header() {
               href="https://bilbord.rs/"
               target="_blank"
               rel="noopener noreferrer"
-              className={`${pathname === "/" ? "underline font-semibold" : ""} text-[#1d1d1f] hover:underline transition`}
+              className="text-[#1d1d1f] hover:underline transition"
             >
-              Naslovna
+              Portal
             </Link>
             <Link
               href="https://bilbord.rs/teme/"
@@ -153,9 +153,9 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMenuOpen(false)}
-                      className={`${pathname === "/" ? "underline font-semibold" : ""} block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition`}
+                      className="block text-white py-2 px-2 text-lg rounded-md hover:bg-gray-800 transition"
                     >
-                      Naslovna
+                      Portal
                     </Link>
                     <Link
                       href="https://bilbord.rs/teme/"
